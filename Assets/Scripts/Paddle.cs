@@ -6,6 +6,9 @@ public class Paddle : MonoBehaviour
 	public float maximumSkew = 300;
 	public float deadZone = 0.15f;
 	
+	public Transform leftLimit;
+	public Transform rightLimit;
+	
 	// Use this for initialization
 	void Start ()
 	{
@@ -16,7 +19,15 @@ public class Paddle : MonoBehaviour
 	void Update ()
 	{
 		float delta = Input.GetAxis("Mouse X");
-		transform.position += new Vector3(delta, 0, 0);
+		
+		float leftEdge = leftLimit.collider.bounds.max.x;
+		float rightEdge = rightLimit.collider.bounds.min.x;
+		
+		float leftPaddle = transform.position.x - transform.localScale.y;
+		float rightPaddle = transform.position.x + transform.localScale.y;
+		
+		if( leftPaddle+delta > leftEdge && rightPaddle+delta < rightEdge )
+			transform.position += new Vector3(delta, 0, 0);
 	}
 	
 	void OnCollisionExit(Collision collisionInfo)
