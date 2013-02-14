@@ -24,11 +24,18 @@ public class StdBrick : MonoBehaviour
 	
 	}
 	
-	void OnCollisionExit( Collision collisionInfo )
+	void OnCollisionEnter( Collision collisionInfo )
 	{
+		StdBrick b = collisionInfo.contacts[0].otherCollider.GetComponent<StdBrick>();
+		if( b != null ) return;
+		
 		//Debug.Log("Health was " + health);
 		health--;
-		if( health == 0 ){
+		if( health == 0 )
+		{
+			BrickManager mgr = transform.parent.gameObject.GetComponent<BrickManager>();
+			mgr.bricksRemaining--;
+			
 			AudioSource.PlayClipAtPoint(breakSound, transform.position);
 			Destroy( gameObject );
 		}
@@ -36,5 +43,9 @@ public class StdBrick : MonoBehaviour
 			AudioSource.PlayClipAtPoint(weakenSound, transform.position);
 			renderer.material = healthMaterials[health-1];
 		}
+	}
+	
+	void OnCollisionStay( Collision collisionInfo ){
+		OnCollisionEnter(collisionInfo);
 	}
 }
